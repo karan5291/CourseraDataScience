@@ -1,0 +1,88 @@
+---
+title: "Prediction Movement Data"
+author: "Karl Andersson"
+date: "Friday, April 24, 2015"
+output: html_document
+---
+
+#Preparation and Method
+###Load Libraries and data
+```{r message=FALSE, warning=FALSE}
+require(dplyr)
+require(caret)
+require(randomForest)
+training = read.csv("pml-training.csv", header = T)
+test = read.csv("pml-testing.csv", header = T)
+```
+
+###Data Cleaning
+
+Remove Outcome variable before transformation
+
+```{r}
+classe <- training$classe
+```
+
+remove columns with all NA-values and X-column
+```{r}
+training = training[,colSums(is.na(training)) ==0]
+training = select(training,-X)
+```
+
+Select the same columns from test as from training
+```{r}
+test <- test[,which(names(test) %in% names(training))]
+```
+
+Convert columns to numeric
+```{r}
+training <- training[, sapply(training, is.numeric)]
+test <- test[,sapply(test, is.numeric)]
+```
+
+add the outcome variable which was removed before cleaning
+```{r}
+training$classe <- classe
+```
+
+###Splitting Data
+Set seed and aprtition data into training and validation sets
+```{r}
+set.seed(12312)
+trainIndex <- createDataPartition(training$classe, p=0.70, list=F)
+trainData = training[trainIndex,]
+validationData = training[-trainIndex,]
+```
+
+###Train Model
+Train a randomForest predictor with classe as outcome and all other columns as predictors. 
+```{r cache = TRUE}
+train_control <- trainControl(method="boot", number=3,allowParallel=T)
+model <- train(as.factor(classe) ~., data = trainData, method = "rf",trControl=train_control)
+```
+###Make Predictions
+
+Make Predictions on Training and Validation set using the trained model
+```{r}
+predictTrain <- predict(model,trainData)
+predictValidation <- predict(model,validationData)
+```
+
+#Analysis and results
+###Confusion Matrix
+A confusionmatrix on the validation predictions and validation set shows what what prediction the model makes correct and which not. The accurancy is very high 0.9997.
+```{r}
+confusionMatrix(predictValidation,validationData$classe)
+```
+
+Our out-of test was 0.00034 = 0.034%
+```{r}
+valInd <- validationData$classe == predictValidation
+ErrorVal = length(valInd[valInd == FALSE])/ length(valInd)
+ErrorVal
+```
+#Prediction of test Dataset
+```{r}
+predictTest = predict(model,newdata=test)
+predictTest
+```
