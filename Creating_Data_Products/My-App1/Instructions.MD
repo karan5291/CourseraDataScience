@@ -1,3 +1,4 @@
+#The Statistical Power App
 ## Overview
 The Statistical Power App is a simple app made in R Shiny that returns the Statistical power for a T.Test based on the parameters that the user input.
 
