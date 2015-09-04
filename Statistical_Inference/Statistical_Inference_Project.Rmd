@@ -1,0 +1,61 @@
+---
+title: "Relation between population statistics and sample statistics"
+author: "Karl Andersson"
+date: "Wednesday, March 11, 2015"
+output: html_document
+---
+
+##Overveiw
+
+This report outlines some facts about the the relationship a population's statistics and a the statistics of a sample of the populatio. A simulation is made to empiracally prove these relationships.
+
+##Simulations
+
+Simulations were carried out by generating the mean of 40 observations drawn from a exponantially distributed population with lamda = 0.2. This operation is repeated 1000 times to get a vector with 1000 sample means.
+
+```{r}
+lambda = 0.2
+mns= NULL
+for (i in 1 : 1000) {
+  mns= c(mns, mean(rexp(40,lambda)))
+}
+```
+
+##Sample Mean versus Theoretical Mean
+We can se that the the mean of the sample means are very close to the theoretical mean of the pupulation.Remember that lambda was set to 0.2.
+
+```{r}
+cat(sprintf('Theoretical Mean of Distribution= 1/ lamda = %f', 1/lambda))
+cat(sprintf('Sample mean(1000 samples) = %f', mean(mns)))
+```
+
+
+##Sample Variance versus Theoretical Variance
+
+The variation of the sample mean is much smaller than the variance of the total population 
+
+```{r}
+cat(sprintf('Sample variance = 1/ lamda = %f', var(mns)))
+cat(sprintf('Teoretical variance of distribution = (1/lamda)^2 = %f' ,((lambda)^-2)))
+
+cat(sprintf('Population variance / Sample variance = %f', (lambda^-2)/var(mns)))
+cat(sprintf('Square root of 1000 = %f',sqrt(40)))
+```
+
+##Sample Mean aprox. normal distributed
+
+The Means are normally distributed, which can be seen as the the frequenzy function is bell shaped and symmetric around the mean.
+```{r}
+
+hist(mns)
+```
+
+THe original enponential distribution is not normally distributed
+```{r}
+hist(rexp(40,0.2), breaks = 50)
+```
+This is seen even better with a histogram of more sample points
+
+```{r}
+hist(rexp(40000,0.2), breaks = 50)
+```
