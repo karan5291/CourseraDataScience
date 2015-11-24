@@ -2,14 +2,14 @@
 title: "Report on mtcars dataset"
 author: "Karl Andersson"
 date: "Friday, April 10, 2015"
-output: pdf_document
+output: word_document
 ---
 
 #Summary
 
-This report analysis the dataset "mtcars" in order to answer if an Is an automatic or manual transmission better for MPG and to quantify the MPG difference between automatic and manual transmissions.
+This report analyses the dataset "mtcars" in order to answer if an automatic, or manual transmission, is more efficient in terms of fuel consumption. Furthermore we try to quantify the MPG difference between automatic and manual transmissions.
 
-We made a regression analysis model that explained 88% of the variance in mpg using the regressors (Wheight, Transmission type, Time on the mile). The result was that manual transmission has a possitive effect for small cars, whereas an automatic gear box has a possitive effect for heavy cars.
+We made a regression analysis model that explained 88% of the variance in mpg using the regressors (Wheight, Transmission type and Time on the mile). The result was that manual transmission has a possitive effect for small cars, whereas an automatic gear box has a possitive effect for heavy cars.
 
 The change in going from Automatic to Manual transmission can be expressed by the formula: 
 Change = 14.08 - 4.14 * Wt.         (wt = Wheight of Car[lb/1000])  
@@ -76,13 +76,13 @@ fitReducedModel = step(fitFullModel, k = log(nrow(mtcars)),trace=F)
 
 ```
 
-THe output is shoen in Apendix1. We can tell that "qsec" ( time to complete a mile) " appears to be a significant varaible, which makes sense because faster cars have stronger engines which usually consume more fuel.Adding Qsec to our original model yields:
+THe output is shown in Apendix1. We can tell that "qsec" ( time to complete a mile) " appears to be a significant varaible, which makes sense because faster cars have stronger engines which usually consume more fuel.Adding Qsec to our original model yields:
 ```{r}
 fitFinal = lm(mpg~qsec + wt*factor(am), data = mtcars)
 summary(fitFinal)
 ```
 
-We can tell that all regressors are significant exeptt for the intercept.
+We can tell that all regressors are significant exept for the intercept.
 Making a residual analysis of the model gives that we don't seem to have any pattern between fit and residuals. And that the residuals are close to beeing normally distributed. Which means that the moduel should be valid.
 
 ```{r}
@@ -96,7 +96,7 @@ The final model shows that all regressors are signifiacant and the R-Squared Adj
 ```{r}
 fitFinal$coefficients
 ```
-With regards to the impact of the transmission it seems that Manual transmission has a negativ inpact on MPG (MPG decreases) for light cars and a Positive impact on heavy cars. THe factor(am)1 coefficient is the change in MPG going from Automatic to Manual but must be considered together with The wt:factor(am) coefficient should be interperated as the change in change of MPG when going from Automatic to Manual that a step in weight give.
+With regards to the impact of the transmission it seems that Manual transmission has a negativ inpact on MPG (MPG decreases) for light cars and a Positive impact on heavy cars. THe factor(am)Manual coefficient is the change in MPG going from Automatic to Manual, but it must be considered together with The wt:factor(am)Manual coefficient which should be interperated as the change in change of MPG when going from Automatic to Manual that a step in weight give.
 
 Therfore the change in going from Automatic to Manual transmission can be expressed by the formula: 
 Change = 14.08 - 4.14 * Wt.         (wt = Wheight of Car[lb/1000])  
